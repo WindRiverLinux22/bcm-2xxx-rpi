@@ -5,7 +5,7 @@ DEFAULTTUNE = "cortexa72"
 require conf/machine/include/arm/armv8a/tune-cortexa72.inc
 
 require conf/machine/include/soc-family.inc
-SOC_FAMILY =. "rpi:"
+SOC_FAMILY = "rpi"
 
 MACHINE_FEATURES += "usbhost ext3 screen alsa vfat"
 
