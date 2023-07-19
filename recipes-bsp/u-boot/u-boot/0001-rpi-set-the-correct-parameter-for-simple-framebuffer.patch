@@ -1,0 +1,36 @@
+From 94ecc37b240633aae10a8afe03287ed6c6a0d6c6 Mon Sep 17 00:00:00 2001
+From: Meng Li <Meng.Li@windriver.com>
+Date: Wed, 19 Jul 2023 19:44:36 +0800
+Subject: [PATCH] rpi: set the correct parameter for simple framebuffer node
+
+When system boots up, there are 2 sets of same bootup log displayed
+on HDMI monitor screen, it looks like the screen is split into 2 parts.
+The root cause is that video format of u-boot is different from kernel.
+The fixing "a8r8g8b8" video format is used in u-boot, but "r5g6b5" video
+format from framebuffer node is used in kernel image. In oder to avoid
+weird display status on screen, it needs to set the correct parameter
+for simple framebuffer node even if it has existed.
+
+Upstream-Status: Pending
+
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
+---
+ board/raspberrypi/rpi/rpi.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/board/raspberrypi/rpi/rpi.c b/board/raspberrypi/rpi/rpi.c
+index cb3ccc4d2a..04ac30f9ba 100644
+--- a/board/raspberrypi/rpi/rpi.c
++++ b/board/raspberrypi/rpi/rpi.c
+@@ -507,6 +507,8 @@ int ft_board_setup(void *blob, struct bd_info *bd)
+ 	node = fdt_node_offset_by_compatible(blob, -1, "simple-framebuffer");
+ 	if (node < 0)
+ 		lcd_dt_simplefb_add_node(blob);
++	else
++		lcd_dt_simplefb_enable_existing_node(blob);
+ 
+ #ifdef CONFIG_EFI_LOADER
+ 	/* Reserve the spin table */
+-- 
+2.34.1
+
